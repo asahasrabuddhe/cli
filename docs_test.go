@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bytes"
 	"io/ioutil"
 	"testing"
 )
@@ -73,6 +74,9 @@ func testApp() *App {
 
 func expectFileContent(t *testing.T, file, expected string) {
 	data, err := ioutil.ReadFile(file)
+	// Ignore windows line endings
+	// TODO: Replace with bytes.ReplaceAll when support for Go 1.11 is dropped
+	expected = string(bytes.Replace([]byte(expected), []byte("\r\n"), []byte("\n"), -1))
 	expect(t, err, nil)
 	expect(t, string(data), expected)
 }
